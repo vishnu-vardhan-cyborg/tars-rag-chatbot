@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from evaluation import compute_metrics
-from rag import ask_question
+from backend.evaluation import compute_metrics
+from backend.rag import ask_question
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
