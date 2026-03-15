@@ -4,7 +4,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from groq import Groq
-from config import GROQ_API_KEY, MODEL_NAME, PDF_FOLDER
+from backend.config import GROQ_API_KEY, MODEL_NAME, PDF_FOLDER
 
 # Initialize Groq
 client = Groq(api_key=GROQ_API_KEY)
