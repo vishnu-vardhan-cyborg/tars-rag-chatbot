@@ -32,7 +32,10 @@ def serve_ui():
 @app.post("/chat")
 def chat(data: Question):
 
-    answer, context_docs = ask_question(data.question)
-    metrics = compute_metrics(data.question, answer, context_docs)
-
-    return {"answer": answer, "metrics": metrics}
+    try:
+        answer, context_docs = ask_question(data.question)
+        metrics = compute_metrics(data.question, answer, context_docs)
+        return {"answer": answer, "metrics": metrics}
+    except Exception as e:
+        print("CHAT ERRO:",e)
+        return {"answer": "Server error occured","metrics":{}}
