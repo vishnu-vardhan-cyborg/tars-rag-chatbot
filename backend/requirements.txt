@@ -7,4 +7,3 @@ pypdf
 groq
 python-dotenv
 numpy
-fastembed
