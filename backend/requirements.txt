@@ -6,4 +6,4 @@ faiss-cpu
 pypdf
 groq
 python-dotenv
-sentence-transformers
+fastembed
