@@ -1,7 +1,10 @@
 async function sendMessage(){
 
 let input = document.getElementById("userInput")
-let message = input.value
+let message = input.value.trim()
+
+// Prevent empty messages
+if(message === "") return
 
 let chatbox = document.getElementById("chatbox")
 
@@ -10,6 +13,8 @@ chatbox.innerHTML += "<p class='user'>USER: "+message+"</p>"
 let API_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
   ? "http://127.0.0.1:8000/chat"
   : "/chat"
+
+try{
 
 let response = await fetch(API_URL,{
 method:"POST",
@@ -25,10 +30,6 @@ let formatted = data.answer.replace(/\n/g,"<br>")
 
 chatbox.innerHTML += "<p class='bot'>TARS:<br>"+formatted+"</p>"
 
-input.value=""
-
-chatbox.scrollTop = chatbox.scrollHeight
-
 /* UPDATE METRICS */
 
 document.getElementById("faithfulness").innerText = data.metrics.faithfulness
@@ -41,4 +42,22 @@ document.getElementById("relevance-bar").style.width = (data.metrics.answer_rele
 document.getElementById("precision-bar").style.width = (data.metrics.context_precision * 100) + "%"
 document.getElementById("recall-bar").style.width = (data.metrics.context_recall * 100) + "%"
 
+}catch(error){
+
+console.error(error)
+chatbox.innerHTML += "<p class='bot'>TARS: Server error.</p>"
+
 }
+
+input.value=""
+chatbox.scrollTop = chatbox.scrollHeight
+
+}
+
+/* ENTER KEY SUPPORT */
+
+document.getElementById("userInput").addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    sendMessage()
+  }
+})
