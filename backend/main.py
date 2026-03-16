@@ -26,11 +26,6 @@ def serve_ui():
     return FileResponse("../frontend/index.html")
 
 
-@app.get("/")
-def home():
-    return {"message": "RAG Groq API running"}
-
-
 @app.post("/chat")
 def chat(data: Question):
 
