@@ -3,7 +3,6 @@ async function sendMessage(){
 let input = document.getElementById("userInput")
 let message = input.value.trim()
 
-// Prevent empty messages
 if(message === "") return
 
 let chatbox = document.getElementById("chatbox")
@@ -26,11 +25,11 @@ body:JSON.stringify({question:message})
 
 let data = await response.json()
 
-let formatted = data.answer.replace(/\n/g,"<br>")
+let formatted = data.answer
+.replace(/\n/g,"<br>")
+.replace(/\*/g,"•")
 
 chatbox.innerHTML += "<p class='bot'>TARS:<br>"+formatted+"</p>"
-
-/* UPDATE METRICS */
 
 document.getElementById("faithfulness").innerText = data.metrics.faithfulness
 document.getElementById("relevance").innerText = data.metrics.answer_relevance
@@ -51,13 +50,12 @@ chatbox.innerHTML += "<p class='bot'>TARS: Server error.</p>"
 
 input.value=""
 chatbox.scrollTop = chatbox.scrollHeight
-
 }
 
 /* ENTER KEY SUPPORT */
 
-document.getElementById("userInput").addEventListener("keypress", function(event) {
-  if (event.key === "Enter") {
-    sendMessage()
-  }
+document.getElementById("userInput").addEventListener("keypress", function(event){
+if(event.key === "Enter"){
+sendMessage()
+}
 })
