@@ -14,6 +14,11 @@ def load_documents():
 
     docs = []
 
+    # Ensure PDF folder exists
+    if not os.path.exists(PDF_FOLDER):
+        print(f"PDF folder not found: {PDF_FOLDER}")
+        return docs
+
     for file in os.listdir(PDF_FOLDER):
         if file.endswith(".pdf"):
             loader = PyPDFLoader(os.path.join(PDF_FOLDER, file))
