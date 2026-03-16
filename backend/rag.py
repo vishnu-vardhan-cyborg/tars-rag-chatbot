@@ -2,7 +2,7 @@ import os
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import FastEmbedEmbeddings
 from groq import Groq
 from backend.config import GROQ_API_KEY, MODEL_NAME, PDF_FOLDER
 
@@ -39,9 +39,7 @@ def build_vectorstore():
 
     chunks = splitter.split_documents(docs)
 
-    embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
+    embeddings = FastEmbedEmbeddings()
      
     vectorstore = FAISS.from_documents(chunks, embeddings)
 
