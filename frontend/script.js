@@ -19,7 +19,7 @@ headers:{
 body:JSON.stringify({question:message})
 })
 
-let text = await response.json()
+let data = await response.json()
 let data
 try{
   data = JSON.parse(text)
