@@ -7,7 +7,7 @@ let chatbox = document.getElementById("chatbox")
 
 chatbox.innerHTML += "<p class='user'>USER: "+message+"</p>"
 
-let API_URL = window.location.hostname === "127.0.0.1"
+let API_URL = window.location.hostname=== "localhost" || window.location.hostname === "127.0.0.1"
   ? "http://127.0.0.1:8000/chat"
   : "/chat"
 
@@ -19,7 +19,15 @@ headers:{
 body:JSON.stringify({question:message})
 })
 
-let data = await response.json()
+let text = await response.json()
+let data
+try{
+  data = JSON.parse(text)
+}catch(e){
+  chatbox.innerHTML += "<p class='bot'>TARS: Server error occurred.</p>"
+  console.error("Server error:",text)
+  return
+}
 
 let formatted = data.answer.replace(/\n/g,"<br>")
 
