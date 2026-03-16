@@ -60,6 +60,9 @@ def ask_question(query):
 
     docs = retriever.invoke(query)
 
+    if not docs:
+        return "No relevent information found in the documnet.", []
+
     context = "\n".join([doc.page_content for doc in docs])
 
     prompt = f"""
