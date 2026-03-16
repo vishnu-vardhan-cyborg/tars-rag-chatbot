@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -18,12 +19,14 @@ app.add_middleware(
 
 class Question(BaseModel):
     question: str
+BASE_DIR = os.path.dirname(os.path.abspath(_file_))
+FRONTEND_DIR = os.path.join(BASE_DIR, "..", "frontend")
 
-app.mount("/static", StaticFiles(directory="../frontend"), name="static")
+app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
 @app.get("/")
 def serve_ui():
-    return FileResponse("../frontend/index.html")
+    return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
 
 
 @app.post("/chat")
