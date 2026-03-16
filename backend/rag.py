@@ -40,8 +40,9 @@ def build_vectorstore():
     chunks = splitter.split_documents(docs)
 
     embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformation/all-miniLM-L6-v2"
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
+     
     vectorstore = FAISS.from_documents(chunks, embeddings)
 
     return vectorstore
@@ -54,66 +55,47 @@ retriever = None
 
 # RAG question answering
 def ask_question(query):
- 
+
     global vectorstore, retriever
- 
+
     if vectorstore is None:
         vectorstore = build_vectorstore()
         retriever = vectorstore.as_retriever()
- 
+
     docs = retriever.invoke(query)
- 
+
     if not docs:
         return "No information found in the documents.", []
- 
+
     context = "\n".join([doc.page_content for doc in docs])
- 
+
+    prompt = f"""
+    You are an AI assistant answering questions ONLY from the provided context.
+
+    Rules:
+    - Answer clearly
+    - Use bullet points
+    - If information is not present say:
+    "Information not found in the provided documents."
+
+    Context:
+    {context}
+
+    Question:
+    {query}
+    """
+
     try:
         chat = client.chat.completions.create(
             model=MODEL_NAME,
-            messages=[{"role": "user", "content": query + "\n\nContext:\n" + context}]
+            messages=[{"role": "user", "content": prompt}]
         )
- 
+
         answer = chat.choices[0].message.content
- 
+
     except Exception as e:
         import traceback
         traceback.print_exc()
-        answer = f"Server error occured: {str(e)}"
- 
-    return answer, docs
-
-    prompt = f"""
-You are an AI assistant answering questions based ONLY on the provided context.
-
-Rules:
-- Answer clearly and concisely.
-- Organize the answer into bullet points.
-- Use numbered lists when explaining steps.
-- If the answer is not in the context, say "Information not found in the provided documents."
-
-Context:
-{context}
-
-Question:
-{query}
-
-Provide the answer in this format:
-
-Title (if applicable)
-
-1. Point one explanation
-2. Point two explanation
-3. Point three explanation
-"""
-
-    chat = client.chat.completions.create(
-        model=MODEL_NAME,
-        messages=[{"role": "user", "content": prompt}]
-    )
-
-    answer = chat.choices[0].message.content
+        answer = "Server error occurred"
 
     return answer, docs
-
-     
