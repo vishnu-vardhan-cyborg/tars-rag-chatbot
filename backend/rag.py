@@ -52,18 +52,34 @@ retriever = None
 
 # RAG question answering
 def ask_question(query):
+ 
     global vectorstore, retriever
-
+ 
     if vectorstore is None:
         vectorstore = build_vectorstore()
         retriever = vectorstore.as_retriever()
-
+ 
     docs = retriever.invoke(query)
-
+ 
     if not docs:
-        return "No relevent information found in the documnet.", []
-
+        return "No information found in the documents.", []
+ 
     context = "\n".join([doc.page_content for doc in docs])
+ 
+    try:
+        chat = client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[{"role": "user", "content": query + "\n\nContext:\n" + context}]
+        )
+ 
+        answer = chat.choices[0].message.content
+ 
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        answer = f"Server error occured: {str(e)}"
+ 
+    return answer, docs
 
     prompt = f"""
 You are an AI assistant answering questions based ONLY on the provided context.
