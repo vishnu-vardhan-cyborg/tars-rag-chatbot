@@ -39,23 +39,24 @@ def build_vectorstore():
 
     chunks = splitter.split_documents(docs)
 
-    embeddings = FastEmbedEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
-
+    embeddings = FastEmbedEmbeddings()
     vectorstore = FAISS.from_documents(chunks, embeddings)
 
     return vectorstore
 
 
 # Initialize vectorstore
-vectorstore = build_vectorstore()
+vectorstore = None
 
-retriever = vectorstore.as_retriever()
-
+retriever = None
 
 # RAG question answering
 def ask_question(query):
+    global vectorstore, retriever
+
+    if vectorstore is None:
+        vectorstore = build_vectorstore()
+        retriever = vectorstore.as_retriever()
 
     docs = retriever.invoke(query)
 
